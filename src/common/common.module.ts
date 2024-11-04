@@ -1,18 +1,12 @@
 import { Module, ValidationPipe } from '@nestjs/common';
 import { APP_PIPE } from '@nestjs/core';
+import { VALIDATION_PIPE_OPTIONS } from './utils/common-constant';
 
 @Module({
   providers: [
     {
       provide: APP_PIPE,
-      useValue: new ValidationPipe({
-        transform: true,
-        whitelist: true,
-        forbidNonWhitelisted: true,
-        transformOptions: {
-          enableImplicitConversion: true,
-        },
-      }),
+      useValue: new ValidationPipe(VALIDATION_PIPE_OPTIONS),
     },
   ],
 })
