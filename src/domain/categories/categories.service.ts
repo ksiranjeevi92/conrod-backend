@@ -10,25 +10,25 @@ import { PaginationDto } from 'common/dto/pagination.dto';
 export class CategoriesService {
   constructor(
     @InjectRepository(Category)
-    private readonly CategoryRepository: Repository<Category>,
+    private readonly categoryRepository: Repository<Category>,
   ) {}
   create(createCategoryDto: CreateCategoryDto) {
-    const Category = this.CategoryRepository.create(createCategoryDto);
+    const Category = this.categoryRepository.create(createCategoryDto);
 
-    return this.CategoryRepository.save(Category);
+    return this.categoryRepository.save(Category);
   }
 
   findAll(paginationDto: PaginationDto) {
     const { limit, offset } = paginationDto;
 
-    return this.CategoryRepository.find({
+    return this.categoryRepository.find({
       skip: offset,
       take: limit,
     });
   }
 
   async findOne(id: number) {
-    const Category = await this.CategoryRepository.findOne({
+    const Category = await this.categoryRepository.findOne({
       where: { id },
       relations: { products: true },
     });
@@ -39,18 +39,18 @@ export class CategoriesService {
   }
 
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    const Category = await this.CategoryRepository.preload({
+    const Category = await this.categoryRepository.preload({
       id,
       ...updateCategoryDto,
     });
     if (!Category) {
       throw new NotFoundException(`The Category not fount with ${id}`);
     }
-    return this.CategoryRepository.save(Category);
+    return this.categoryRepository.save(Category);
   }
 
   async remove(id: number) {
-    const Category = await this.CategoryRepository.findOne({ where: { id } });
-    return this.CategoryRepository.remove(Category);
+    const Category = await this.categoryRepository.findOne({ where: { id } });
+    return this.categoryRepository.remove(Category);
   }
 }

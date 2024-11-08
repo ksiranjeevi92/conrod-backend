@@ -22,8 +22,6 @@ export class User {
   @Column(() => RegistryDates, { prefix: false })
   registryDates: RegistryDates;
 
+  @OneToMany(() => Order, (order) => order.customer)
   orders: Order[];
-
-  @Column({ nullable: true })
-  remarks: string;
 }
