@@ -1,27 +1,56 @@
-import { Injectable } from '@nestjs/common';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateCategoryDto } from './dto/create-Category.dto';
+import { UpdateCategoryDto } from './dto/update-Category.dto';
+import { Repository } from 'typeorm';
+import { Category } from './entities/Category.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationDto } from 'common/dto/pagination.dto';
 
 @Injectable()
 export class CategoriesService {
+  constructor(
+    @InjectRepository(Category)
+    private readonly CategoryRepository: Repository<Category>,
+  ) {}
   create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+    const Category = this.CategoryRepository.create(createCategoryDto);
+
+    return this.CategoryRepository.save(Category);
   }
 
   findAll(paginationDto: PaginationDto) {
-    return `This action returns all categories`;
+    const { limit, offset } = paginationDto;
+
+    return this.CategoryRepository.find({
+      skip: offset,
+      take: limit,
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  async findOne(id: number) {
+    const Category = await this.CategoryRepository.findOne({
+      where: { id },
+      relations: { products: true },
+    });
+    if (!Category) {
+      throw new NotFoundException(`The Category not fount with ${id}`);
+    }
+    return Category;
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  async update(id: number, updateCategoryDto: UpdateCategoryDto) {
+    const Category = await this.CategoryRepository.preload({
+      id,
+      ...updateCategoryDto,
+    });
+    if (!Category) {
+      throw new NotFoundException(`The Category not fount with ${id}`);
+    }
+    return this.CategoryRepository.save(Category);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  async remove(id: number) {
+    const Category = await this.CategoryRepository.findOne({ where: { id } });
+    return this.CategoryRepository.remove(Category);
   }
 }

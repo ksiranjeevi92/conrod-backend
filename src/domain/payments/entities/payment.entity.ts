@@ -12,8 +12,10 @@ import {
 export class Payment {
   @PrimaryGeneratedColumn()
   id: number;
+
   @Column(() => RegistryDates, { prefix: false })
   registryDates: RegistryDates;
+
   @OneToOne(() => Order, (order) => order.payment, { onDelete: 'CASCADE' })
   @JoinColumn()
   order: Order;

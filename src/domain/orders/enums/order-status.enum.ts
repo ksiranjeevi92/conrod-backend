@@ -1,4 +1,4 @@
-export enum Ordertatus {
+export enum OrderStatus {
   AWAITING_PAYMENT = 'AWAITING_PAYMENT',
   AWAITING_SHIPMENT = 'AWAITING_SHIPMENT',
   SHIPPED = 'SHIPPED',

@@ -6,16 +6,24 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
+
   @Column()
   name: string;
+
   @Column({ unique: true })
   email: string;
+
   @Column()
   password: string;
+
   @Column({ unique: true })
   phone: string;
+
   @Column(() => RegistryDates, { prefix: false })
   registryDates: RegistryDates;
-  @OneToMany(() => Order, (orders) => orders.customer)
+
   orders: Order[];
+
+  @Column({ nullable: true })
+  remarks: string;
 }
